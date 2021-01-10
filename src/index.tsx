@@ -1,10 +1,5 @@
-import * as React from 'react'
-import styles from './styles.module.css'
+import Swiper from './Swiper'
 
-interface Props {
-  text: string
-}
+export { SwipeRef, SwiperProps } from './types'
 
-export const ExampleComponent = ({ text }: Props) => {
-  return <div className={styles.test}>Example Component: {text}</div>
-}
+export default Swiper
