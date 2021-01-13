@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import Swiper,{SwipeRef} from 'react-tiga-swiper';
-import 'react-tiga-swiper/dist/index.css';
+
 function App() {
   const swiperRef = useRef<SwipeRef>(null);
-  const [index, setIndex] = useState<string>();
+  const [index, setIndex] = useState<any>();
   const swiperData = ["green", "red", "yellow", "black"];
 
   const swipeTo = () => {
@@ -24,7 +24,6 @@ function App() {
 
   const onChange = (currPage: number, prevPage: number) => {
     console.log(currPage, prevPage);
-    
   };
 
   return (
