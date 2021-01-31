@@ -272,13 +272,16 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
             className={`${prefix}-swiper-indicator ${prefix}-indicator-left`}
             onClick={prev}
           >
-            <i className={`${prefix}-indicator-icon`} />
-          </div>
+            <i className={`${prefix}-indicator-icon`}>
+              <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1121" width="200" height="200"><path d="M755.499 115.499a42.667 42.667 0 0 0-60.331-60.331L268.501 481.835a42.667 42.667 0 0 0 0 60.33l426.667 426.667a42.667 42.667 0 0 0 60.33-60.33L358.999 512l396.5-396.501z" p-id="1122"></path></svg>
+            </i>
+           </div>
           <div
             className={`${prefix}-swiper-indicator ${prefix}-indicator-right`}
             onClick={next}
           >
-            <i className={`${prefix}-indicator-icon`} />
+             <i className={`${prefix}-indicator-icon`}>
+             <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1531" width="200" height="200"><path d="M268.501 908.501a42.667 42.667 0 0 0 60.331 60.331l426.667-426.667a42.667 42.667 0 0 0 0-60.33L328.832 55.168a42.667 42.667 0 0 0-60.33 60.33L665.001 512l-396.5 396.501z" p-id="1532"></path></svg></i>
           </div>
         </Fragment>
       )
@@ -293,7 +296,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
               key={key}
               onClick={() => moveTo(key)}
               className={classNames(`${prefix}-dots`, {
-                [`${prefix}-dots-active`]: item === active
+                [`${prefix}-dots-active`]: key === active
               })}
             >
               {item}
@@ -305,8 +308,6 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
 
     return (
       <div className={`${prefix}-swiper-wrap`} ref={ref as any}>
-        {active}
-        {swiping + ''}
         <div ref={swiperContainerRef as any} className={classes} style={style}>
           <div
             style={swipeStyle}
