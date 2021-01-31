@@ -15,8 +15,9 @@ npm install --save react-tiga-swiper
 ```tsx
 import React, { Component } from 'react'
 
-import Swiper,{SwipeRef} from 'react-tiga-swiper'
-const swiperData = ["green", "red", "yellow", "black"];
+import Swiper,{SwipeRef} from 'react-tiga-swiper';
+import 'react-tiga-swiper/dist/index.css';
+const swiperData = ["#99CCCC", "#FFCC99", "#FFCCCC", "#FFFFCC","#CCFFFF"];
 
 function Example(props){
 
