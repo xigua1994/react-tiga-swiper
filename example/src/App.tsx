@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
 import Swiper,{SwipeRef} from 'react-tiga-swiper';
+import 'react-tiga-swiper/dist/index.css';
 
 function App() {
   const swiperRef = useRef<SwipeRef>(null);
   const [index, setIndex] = useState<any>();
-  const swiperData = ["green", "red", "yellow", "black"];
+  const swiperData = ["#99CCCC", "#FFCC99", "#FFCCCC", "#FFFFCC","#CCFFFF"];
 
   const swipeTo = () => {
     const swiperInstance = swiperRef.current;
@@ -26,21 +27,32 @@ function App() {
     console.log(currPage, prevPage);
   };
 
+  // const indicator = () => {
+  //   return <>
+  //     <div className="demo-indicator-arrow demo-indicator-left" onClick={prev}></div>
+  //     <div className="demo-indicator-arrow demo-indicator-right" onClick={next}></div>
+  //   </>
+  // }
+
   return (
     <>
       <div style={{ marginBottom: 20 }}>
-        <input
-          type="number"
-          value={index}
-          onChange={(e) => setIndex(e.target.value)}
-        />
-        <span onClick={swipeTo}>手动跳转页面</span>
-        <span onClick={prev}>上一页</span>
-        <span onClick={next}>下一页</span>
+        <div className="manu-action">
+          <input
+            type="number"
+            value={index}
+            onChange={(e) => setIndex(e.target.value)}
+          />
+          <span className="btn" onClick={swipeTo}>手动跳转页面</span>
+        </div>
+        <div className="more-action">
+          <span className="btn" onClick={prev}>上一页</span>
+          <span className="btn" onClick={next}>下一页</span>
+        </div>
       </div>
       <Swiper
+        className="demo-swiper-container"
         autoPlay={3000}
-        style={{ height: "100px", border: "1px solid black" }}
         selectedIndex={0}
         showIndicators={true}
         indicator={null}

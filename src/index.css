@@ -10,7 +10,6 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
-  background: #dcdee0;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -18,25 +17,20 @@
   justify-content: center;
   align-items: center;
 }
-.tiga-swiper-indicator-indicator-icon {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-top: 2px solid #ffffff;
-  border-right: 2px solid #ffffff;
-  transform: rotate(45deg);
-  margin-right: 2px;
-}
 .tiga-indicator-left {
-  left: 20px;
+  left: 10px;
 }
 .tiga-indicator-icon {
-  transform: rotate(225deg);
-  margin-left: 2px;
-  margin-right: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.tiga-indicator-icon svg{
+  width: 20px;
+  height: 20px;
+  -webkit-tap-highlight-color: transparent;
 }
 .tiga-indicator-right {
-  right: 20px;
+  right: 10px;
 }
 .tiga-dots-wrap {
   position: absolute;
@@ -48,6 +42,8 @@
   left: 50%;
   transform: translateX(-50%);
   bottom: 5px;
+  background: #808080;
+  border-radius: 20px;
 }
 .tiga-dots {
   width: 10px;
