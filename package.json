@@ -10,7 +10,6 @@
   "umd:main": "dist/index.min.js",
   "unpkg": "dist/index.min.js",
   "source": "src/index.tsx",
-  "types": "dist/types.d.ts",
   "engines": {
     "node": ">=10"
   },
