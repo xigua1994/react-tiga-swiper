@@ -43,7 +43,7 @@ function App() {
             value={index}
             onChange={(e) => setIndex(e.target.value)}
           />
-          <span className="btn" onClick={swipeTo}>手动跳转页面</span>
+          <span className="btn" onClick={swipeTo}>手动跳转页面(从零开始)</span>
         </div>
         <div className="more-action">
           <span className="btn" onClick={prev}>上一页</span>
@@ -57,6 +57,8 @@ function App() {
         showIndicators={true}
         indicator={null}
         dots={null}
+        direction="vertical"
+        loop={false}
         ref={swiperRef}
         onChange={onChange}
       >

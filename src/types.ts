@@ -10,6 +10,8 @@ export interface SwiperProps {
   autoPlay?: number
   selectedIndex?: number
   children?: React.ReactNode
+  direction?: 'horizontal' | 'vertical',
+  loop?: boolean,
   className?: string
   touchable?: boolean
   duration?: number
