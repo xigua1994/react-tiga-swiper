@@ -13,14 +13,15 @@ import debounce from './util/debounce'
 import useInterval from './hooks/useInterval'
 import useStateRef from './hooks/useStateRef'
 import { SwipeRef, SwiperProps } from './types'
-import './index.css'
-
+import './index.scss'
 const prefix = 'tiga'
 
 const Swiper = forwardRef<SwipeRef, SwiperProps>(
   (
     {
       autoPlay = 3000,
+      direction = 'horizontal',
+      loop = true,
       selectedIndex = 0,
       touchable = true,
       children,
@@ -36,14 +37,16 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     ref
   ) => {
     const [node, setNode] = useState<HTMLDivElement | null>(null)
-    const [swiperWidth, setSwiperWidth, swiperWidthRef] = useStateRef(0)
+    const [nodeAttr, setNodeAttr] = useState<"width"|"height">(direction === 'horizontal' ? "width" : "height")
+    const [aditionPage,setAditPage] = useState<number>(loop ? 1 : 0);
+    const [swiperAttrStyle, setswiperAttrStyle, swiperAttrStyleRef] = useStateRef(0)
     const lastStarX = useRef<number>(0)
     const [active, setActive, activeRef] = useStateRef(selectedIndex)
     const [swiping, setSwiping, swipingRef] = useStateRef(false)
     const [swipeStyle, setSwipeStyle, swipeStyleRef] = useStateRef({
       transform: 'translate3d(0px, 0, 0)',
       transitionDuration: '0ms',
-      width: '0px'
+      nodeAttr: '0px'
     })
     const container = useRef<HTMLDivElement | null>(null)
     const count = React.Children.count(children)
@@ -54,7 +57,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       setSwipeStyle({
         ...swipeStyleRef.current,
         ...{
-          transform: `translate3d(${distance}px, 0, 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
           transitionDuration: duration + 'ms'
         }
       })
@@ -66,13 +69,16 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         }
       }, duration)
     }
+    useEffect(() => {
+      setAditPage(loop ? 1 : 0)
+    },[loop])
     // reset position when moved to cloned element
     const resetPosition = (resetActived: number) => {
-      const distance = -(resetActived + 1) * swiperWidthRef.current
+      const distance = -(resetActived + 1) * swiperAttrStyleRef.current
       setTimeout(() => {
         setSwipeStyle({
           ...swipeStyle,
-          transform: `translate3d(${distance}px, 0, 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
           transitionDuration: '0ms'
         })
       }, duration)
@@ -86,48 +92,54 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
 
     const move = (pace: number): void | boolean => {
       const movePace = activeRef.current + pace
-      const distance = -(movePace + 1) * swiperWidthRef.current
+      const distance = -(movePace + aditionPage) * swiperAttrStyleRef.current
       const needRest = movePace >= count || movePace <= -1
       const resetActived = movePace >= count ? 0 : count - 1
       translate(distance, needRest ? resetActived : movePace, pace !== 0)
-      if (needRest) {
+      if (needRest && loop) {
         resetPosition(resetActived)
       }
     }
     // move to
     const moveTo = (index: number) => {
-      const distance = -(index + 1) * swiperWidth
+      const distance = -(index + aditionPage) * swiperAttrStyle
       setSwiping(true)
       translate(distance, index)
     }
 
     const prev = () => {
       setSwiping(true)
-      move(-1)
+      if(loop || (!loop && activeRef.current !== 0)){
+        move(-1)
+      }
     }
 
     const next = () => {
       setSwiping(true)
-      move(1)
+      if(loop || (!loop && activeRef.current !== count - 1)){
+        move(1)
+      }
     }
 
     const onStartTouch = (e: React.TouchEvent) => {
+      e.preventDefault();
       const touch = e.targetTouches[0]
-      lastStarX.current = touch.pageX
+      lastStarX.current = nodeAttr === 'width' ?  touch.pageX : touch.pageY
       setSwiping(false)
     }
 
     const onMoveTouch = (e: React.TouchEvent) => {
+      e.preventDefault();
       if (touchable || swipingRef.current) {
         const touch = e.targetTouches[0]
         const distance =
-          touch.pageX -
+          (nodeAttr === 'width' ?  touch.pageX : touch.pageY) -
           lastStarX.current -
-          (activeRef.current + 1) * swiperWidthRef.current
+          (activeRef.current + aditionPage) * swiperAttrStyleRef.current
         setSwipeStyle({
           ...swipeStyleRef.current,
           ...{
-            transform: `translate3d(${distance}px, 0, 0)`,
+            transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
             transitionDuration: duration + 'ms'
           }
         })
@@ -135,9 +147,11 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }
 
     const onEndTouch = (e: React.TouchEvent) => {
+      e.preventDefault();
       const touch = e.changedTouches[0]
-      const distance = touch.pageX - lastStarX.current
-      const shouldSwipe = Math.abs(distance * 3) > swiperWidthRef.current
+      const distance = (nodeAttr === 'width' ?  touch.pageX : touch.pageY) - lastStarX.current
+      const unLoopEdge = !loop && ((distance > 0 && activeRef.current > 0 ) || (distance < 0 && activeRef.current < count - 1));
+      const shouldSwipe = Math.abs(distance * 3) > swiperAttrStyleRef.current && ( loop || unLoopEdge);
       if (distance < 0 && shouldSwipe) {
         move(1)
       } else if (distance > 0 && shouldSwipe) {
@@ -146,11 +160,15 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         move(0)
       }
     }
-    // 初始化
+
+    useEffect(() => {
+      setNodeAttr(direction === 'horizontal' ? "width" : "height")
+    }, [direction])
+    // init
     useEffect((): any => {
       if (node) {
         const measure = () => {
-          setSwiperWidth(node.getBoundingClientRect().width)
+          setswiperAttrStyle(node.getBoundingClientRect()[nodeAttr])
         }
         const handleResize = debounce(measure, 200)
         measure()
@@ -160,15 +178,17 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
           handleResize.cancle()
         }
       }
-    }, [node])
+    }, [node,nodeAttr])
     // 定时器
     useInterval(
       () => {
-        move(1)
+        if(loop || (!loop && activeRef.current !== count - 1)){
+          move(1)
+        }
       },
       autoPlay > 0 && !swiping ? autoPlay : null
     )
-    // 对外暴露的组件实例
+    // ref instance
     useImperativeHandle(ref, () => ({
       swipeTo: (index: number) => {
         const target = index >= count ? count - 1 : index
@@ -183,16 +203,17 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }))
 
     useEffect(() => {
+      const distance = -(active + aditionPage) * swiperAttrStyle;
       setSwipeStyle({
         ...swipeStyle,
         ...{
-          transform: `translate3d(${-(active + 1) * swiperWidth}px, 0, 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px , 0)`,
           transitionDuration: duration + 'ms'
         }
       })
-    }, [swiperWidth])
+    }, [swiperAttrStyle])
 
-    // touch监听
+    // listene attch event
     useEffect((): any => {
       if (container.current) {
         container.current.addEventListener(
@@ -229,26 +250,26 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       }
     }, [])
 
-    const classes = classNames(`${prefix}-swiper`, className)
-    // 进行swipeItems clone
+    const classes = classNames(`${prefix}-swiper ${prefix}-swiper__${direction}`, className)
     swipeItems = React.Children.map(
       children,
       (item: React.ReactChild, index: number) => (
         <div
           className={`${prefix}-swiper-item`}
           key={index + 1}
-          style={{ width: swiperWidth + 'px' }}
+          style={{ nodeAttr: swiperAttrStyle + 'px' } as React.CSSProperties}
         >
           {item}
         </div>
       )
     )
-    if (count !== 0) {
+    // clone first element and last element
+    if (count !== 0 && loop) {
       swipeItems.push(
         <div
           className={`${prefix}-swiper-item`}
           key={count + 1}
-          style={{ width: swiperWidth + 'px' }}
+          style={{ nodeAttr: swiperAttrStyle + 'px' } as React.CSSProperties}
         >
           {childrenArr[0]}
         </div>
@@ -257,19 +278,19 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         <div
           className={`${prefix}-swiper-item`}
           key={0}
-          style={{ width: swiperWidth + 'px' }}
+          style={{ nodeAttr: swiperAttrStyle + 'px' } as React.CSSProperties}
         >
           {childrenArr[count - 1]}
         </div>
       )
     }
-    // 左右键
+    // left and right indicator
     const renderIndicator = (): React.ReactNode => {
       if (indicator) return indicator
       return (
         <Fragment>
           <div
-            className={`${prefix}-swiper-indicator ${prefix}-indicator-left`}
+            className={`${prefix}-swiper-indicator ${prefix}-indicator-left ${!loop && active === 0 ? (prefix+'-indicator__disable') : ''}`}
             onClick={prev}
           >
             <i className={`${prefix}-indicator-icon`}>
@@ -277,7 +298,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
             </i>
            </div>
           <div
-            className={`${prefix}-swiper-indicator ${prefix}-indicator-right`}
+            className={`${prefix}-swiper-indicator ${prefix}-indicator-right ${!loop && active === count-1 ? (prefix+'-indicator__disable') : ''}`}
             onClick={next}
           >
              <i className={`${prefix}-indicator-icon`}>
@@ -286,7 +307,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         </Fragment>
       )
     }
-    // 底部的提示
+    // bottom dots
     const renderDots = () => {
       if (dots) return dots
       return (
@@ -311,7 +332,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         <div ref={swiperContainerRef as any} className={classes} style={style}>
           <div
             style={swipeStyle}
-            className={`${prefix}-swiper-container`}
+            className={`${prefix}-swiper-container ${prefix}-swiper-container__${direction}`}
             ref={container as any}
           >
             {swipeItems}

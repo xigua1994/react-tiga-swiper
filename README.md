@@ -1,6 +1,6 @@
 # react-tiga-swiper
 
-> Made with create-react-library
+> a fantastic react swiper component
 
 [![NPM](https://img.shields.io/npm/v/react-tiga-swiper.svg)](https://www.npmjs.com/package/react-tiga-swiper) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -13,16 +13,14 @@ npm install --save react-tiga-swiper
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
-
+import React, { useRef, useState } from "react";
 import Swiper,{SwipeRef} from 'react-tiga-swiper';
 import 'react-tiga-swiper/dist/index.css';
-const swiperData = ["#99CCCC", "#FFCC99", "#FFCCCC", "#FFFFCC","#CCFFFF"];
 
-function Example(props){
-
+function App() {
   const swiperRef = useRef<SwipeRef>(null);
   const [index, setIndex] = useState<any>();
+  const swiperData = ["#99CCCC", "#FFCC99", "#FFCCCC", "#FFFFCC","#CCFFFF"];
 
   const swipeTo = () => {
     const swiperInstance = swiperRef.current;
@@ -43,26 +41,32 @@ function Example(props){
   const onChange = (currPage: number, prevPage: number) => {
     console.log(currPage, prevPage);
   };
-  
+
   return (
     <>
       <div style={{ marginBottom: 20 }}>
-        <input
-          type="number"
-          value={index}
-          onChange={(e) => setIndex(e.target.value)}
-        />
-        <span onClick={swipeTo}>手动跳转页面</span>
-        <span onClick={prev}>上一页</span>
-        <span onClick={next}>下一页</span>
+        <div className="manu-action">
+          <input
+            type="number"
+            value={index}
+            onChange={(e) => setIndex(e.target.value)}
+          />
+          <span className="btn" onClick={swipeTo}>手动跳转页面(从零开始)</span>
+        </div>
+        <div className="more-action">
+          <span className="btn" onClick={prev}>上一页</span>
+          <span className="btn" onClick={next}>下一页</span>
+        </div>
       </div>
       <Swiper
+        className="demo-swiper-container"
         autoPlay={3000}
-        style={{ height: "100px"}}
         selectedIndex={0}
         showIndicators={true}
         indicator={null}
         dots={null}
+        direction="vertical"
+        loop={false}
         ref={swiperRef}
         onChange={onChange}
       >
@@ -71,8 +75,9 @@ function Example(props){
         ))}
       </Swiper>
     </>
-  )
+  );
 }
+
 ```
 
 ## API
@@ -81,6 +86,8 @@ function Example(props){
 | ------------------ | -------------------------- | ------------------------------------- | ---------- | ----------------------------------------------- |
 | `duration`  | 切换动画持续时间(ms)       | `number`   | `300`      |   |
 | `autoPlay`   | 自动切换间隔时间(ms)       | `number`  | `3000`     |     |
+| `direction`   | 滚动方向          | `string`  | `'horizontal' | 'vertical'`     |     |
+| `loop`   | 是否允许循环轮播       | `bool`           | `true`     |  |
 | `touchable`   | 是否允许滑动       | `bool`           | `true`     |  |
 | `showIndicators`   | 是否显示两侧翻页按钮  | `bool` | `true` |  |
 | `showDots`    | 是否显示底部dots           | `bool`     | `true` | |
