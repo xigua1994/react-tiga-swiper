@@ -109,15 +109,15 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }
 
     const prev = () => {
-      setSwiping(true)
       if(loop || (!loop && activeRef.current !== 0)){
+        setSwiping(true)
         move(-1)
       }
     }
 
     const next = () => {
-      setSwiping(true)
       if(loop || (!loop && activeRef.current !== count - 1)){
+        setSwiping(true)
         move(1)
       }
     }
