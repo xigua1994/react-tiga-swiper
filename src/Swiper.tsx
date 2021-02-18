@@ -5,12 +5,13 @@ import React, {
   useImperativeHandle,
   useRef,
   useEffect,
-  Fragment
+  Fragment,
+  useMemo
 } from 'react'
 import classNames from 'classnames'
 import noop from './util/noop'
 import debounce from './util/debounce'
-import useInterval from './hooks/useInterval'
+import useTimoutInsteadInterval from './hooks/useTimoutInsteadInterval'
 import useStateRef from './hooks/useStateRef'
 import { SwipeRef, SwiperProps } from './types'
 import './index.scss'
@@ -37,8 +38,6 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     ref
   ) => {
     const [node, setNode] = useState<HTMLDivElement | null>(null)
-    const [nodeAttr, setNodeAttr] = useState<"width"|"height">(direction === 'horizontal' ? "width" : "height")
-    const [aditionPage,setAditPage] = useState<number>(loop ? 1 : 0);
     const [swiperAttrStyle, setswiperAttrStyle, swiperAttrStyleRef] = useStateRef(0)
     const lastStarX = useRef<number>(0)
     const [active, setActive, activeRef] = useStateRef(selectedIndex)
@@ -48,8 +47,12 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       transitionDuration: '0ms',
       nodeAttr: '0px'
     })
-    const container = useRef<HTMLDivElement | null>(null)
     const count = React.Children.count(children)
+    const nodeAttr = useMemo(() => (direction === 'horizontal' ? "width" : "height"), [direction]);
+    const canAutoMove = useMemo(() => !(!loop && active === count - 1), [loop, active, count]);
+    const tickMove = useMemo(() => canAutoMove && !swiping && autoPlay > 0,[canAutoMove, swiping, autoPlay])
+    const aditionPage = useMemo(() => (loop ? 1 : 0) ,[loop]);
+    const container = useRef<HTMLDivElement | null>(null)
     const childrenArr = React.Children.toArray(children)
     let swipeItems: any = []
     // translate
@@ -69,9 +72,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         }
       }, duration)
     }
-    useEffect(() => {
-      setAditPage(loop ? 1 : 0)
-    },[loop])
+
     // reset position when moved to cloned element
     const resetPosition = (resetActived: number) => {
       const distance = -(resetActived + 1) * swiperAttrStyleRef.current
@@ -125,7 +126,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       e.preventDefault();
       const touch = e.targetTouches[0]
       lastStarX.current = nodeAttr === 'width' ?  touch.pageX : touch.pageY
-      setSwiping(false)
+      setSwiping(true)
     }
 
     const onMoveTouch = (e: React.TouchEvent) => {
@@ -161,9 +162,6 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       }
     }
 
-    useEffect(() => {
-      setNodeAttr(direction === 'horizontal' ? "width" : "height")
-    }, [direction])
     // init
     useEffect((): any => {
       if (node) {
@@ -179,14 +177,14 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
         }
       }
     }, [node,nodeAttr])
-    // 定时器
-    useInterval(
+    // use setTimeout instead of setInterval
+    useTimoutInsteadInterval(
       () => {
         if(loop || (!loop && activeRef.current !== count - 1)){
           move(1)
         }
       },
-      autoPlay > 0 && !swiping ? autoPlay : null
+      tickMove ? autoPlay : null
     )
     // ref instance
     useImperativeHandle(ref, () => ({
