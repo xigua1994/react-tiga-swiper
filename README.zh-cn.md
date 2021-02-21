@@ -4,10 +4,6 @@
 
 [![NPM](https://img.shields.io/npm/v/react-tiga-swiper.svg)](https://www.npmjs.com/package/react-tiga-swiper) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-<p align="center">
-  🇨🇳 <a href="./README.zh-CN.md">中文版介绍</a>
-</p>
-
 ## Install
 
 ```bash
@@ -55,11 +51,11 @@ function App() {
             value={index}
             onChange={(e) => setIndex(e.target.value)}
           />
-          <span className="btn" onClick={swipeTo}>swipe to (index start 0)</span>
+          <span className="btn" onClick={swipeTo}>手动跳转页面(从零开始)</span>
         </div>
         <div className="more-action">
-          <span className="btn" onClick={prev}>prev</span>
-          <span className="btn" onClick={next}>next</span>
+          <span className="btn" onClick={prev}>上一页</span>
+          <span className="btn" onClick={next}>下一页</span>
         </div>
       </div>
       <Swiper
@@ -86,29 +82,29 @@ function App() {
 
 ## API
 
-| attribute               | desc                       | type                                  | default     | others                                          |
+| 参数               | 说明                       | 类型                                  | 默认值     | 备选值                                          |
 | ------------------ | -------------------------- | ------------------------------------- | ---------- | ----------------------------------------------- |
-| `duration`  | Animation duration(ms)       | `number`   | `300`      |   |
-| `autoPlay`   | Autoplay interval(ms)       | `number`  | `3000`     |     |
-| `selectedIndex` | index of initial swiper, start from 0 | `number` |  `0` | |
-| `direction`   | scroll direction          | `string`  | `'horizontal' | 'vertical'`     |     |
-| `loop`   | whether to enable loop       | `bool`           | `true`     |  |
-| `touchable`   | whether to enable touchable       | `bool`           | `true`     |  |
-| `showIndicators`   | whether to enable show indicators  | `bool` | `true` |  |
-| `showDots`    | whether to enable show dots           | `bool`     | `true` | |
-| `dots`   | bottom dots  | `React.ReactNode`    | `null`    |   |
-| `indicator`   | indicator   | `React.ReactNode`    | `null`    |   |
-| `style`     | style   |  `React.CSSProperties` | `{}`    |        |
-| `className`   | className  | `string`   | `''`       |    |
-| `onChange`  | emitted when currage swipe changed | `(current: number, prev: number): void` | `noop`   |   |
+| `duration`  | 切换动画持续时间(ms)       | `number`   | `300`      |   |
+| `autoPlay`   | 自动切换间隔时间(ms)       | `number`  | `3000`     |     |
+| `selectedIndex` | 默认选中index | `number` |  `0` | |
+| `direction`   | 滚动方向          | `string`  | `'horizontal' | 'vertical'`     |     |
+| `loop`   | 是否允许循环轮播       | `bool`           | `true`     |  |
+| `touchable`   | 是否允许滑动       | `bool`           | `true`     |  |
+| `showIndicators`   | 是否显示两侧翻页按钮  | `bool` | `true` |  |
+| `showDots`    | 是否显示底部dots           | `bool`     | `true` | |
+| `dots`   | 底部dots  | `React.ReactNode`    | `null`    |   |
+| `indicator`   | 两侧翻页按钮   | `React.ReactNode`    | `null`    |   |
+| `style`     | 自定义额外样式   |  `React.CSSProperties` | `{}`    |        |
+| `className`   | 自定义额外类名  | `string`   | `''`       |    |
+| `onChange`  | 切换时回调函数 | `(current: number, prev: number): void` | `noop`   |   |
 
-## Swipe Methods
+## 实例方法
 
-| methods  | desc               | argument | desc                       |
+| 方法名  | 说明               | 参数名 | 参数描述                       |
 | ------- | ------------------ | ------ | ------------------------------ |
-| `swipeTo` | swipe to target index     | `index`  | start 0 |
-| `prev`    | swipe to prev item |        |                                |
-| `next`    | swipe to next item |        |                                |
+| `swipeTo` | 手动切换轮播图     | `index`  | 需要切换的轮播图索引,从 0 开始 |
+| `prev`    | 切换至上一张轮播图 |        |                                |
+| `next`    | 切换至下一张轮播图 |        |                                |
 ## License
 
 MIT © [xigua1994](https://github.com/xigua1994)
