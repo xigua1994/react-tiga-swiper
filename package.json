@@ -26,7 +26,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": ">=16.8"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -52,19 +52,20 @@
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
     "microbundle-crl": "^0.13.10",
+    "node-sass": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "typescript": "^3.7.5",
-    "node-sass": "^5.0.0"
+    "typescript": "^3.7.5"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@types/classnames": "^2.2.11",
-    "classnames": "^2.2.6"
+    "classnames": "^2.2.6",
+    "use-timeout-mock-interval": "^1.0.0"
   }
 }

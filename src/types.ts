@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import * as React from 'react'
 
 export interface SwipeRef {
@@ -10,8 +11,8 @@ export interface SwiperProps {
   autoPlay?: number
   selectedIndex?: number
   children?: React.ReactNode
-  direction?: 'horizontal' | 'vertical',
-  loop?: boolean,
+  direction?: 'horizontal' | 'vertical'
+  loop?: boolean
   className?: string
   touchable?: boolean
   duration?: number
