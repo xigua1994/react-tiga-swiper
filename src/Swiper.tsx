@@ -11,8 +11,9 @@ import React, {
 import classNames from 'classnames'
 import noop from './util/noop'
 import debounce from './util/debounce'
-import useTimoutInsteadInterval from './hooks/useTimoutInsteadInterval'
+import useTimoutInsteadInterval from 'use-timeout-mock-interval'
 import useStateRef from './hooks/useStateRef'
+// eslint-disable-next-line no-unused-vars
 import { SwipeRef, SwiperProps } from './types'
 import './index.scss'
 const prefix = 'tiga'
@@ -38,7 +39,11 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     ref
   ) => {
     const [node, setNode] = useState<HTMLDivElement | null>(null)
-    const [swiperAttrStyle, setswiperAttrStyle, swiperAttrStyleRef] = useStateRef(0)
+    const [
+      swiperAttrStyle,
+      setswiperAttrStyle,
+      swiperAttrStyleRef
+    ] = useStateRef(0)
     const lastStarX = useRef<number>(0)
     const [active, setActive, activeRef] = useStateRef(selectedIndex)
     const [swiping, setSwiping, swipingRef] = useStateRef(false)
@@ -48,10 +53,21 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       nodeAttr: '0px'
     })
     const count = React.Children.count(children)
-    const nodeAttr = useMemo(() => (direction === 'horizontal' ? "width" : "height"), [direction]);
-    const canAutoMove = useMemo(() => !(!loop && active === count - 1), [loop, active, count]);
-    const tickMove = useMemo(() => canAutoMove && !swiping && autoPlay > 0,[canAutoMove, swiping, autoPlay])
-    const aditionPage = useMemo(() => (loop ? 1 : 0) ,[loop]);
+    const nodeAttr = useMemo(
+      () => (direction === 'horizontal' ? 'width' : 'height'),
+      [direction]
+    )
+    const canAutoMove = useMemo(() => !(!loop && active === count - 1), [
+      loop,
+      active,
+      count
+    ])
+    const tickMove = useMemo(() => canAutoMove && !swiping && autoPlay > 0, [
+      canAutoMove,
+      swiping,
+      autoPlay
+    ])
+    const aditionPage = useMemo(() => (loop ? 1 : 0), [loop])
     const container = useRef<HTMLDivElement | null>(null)
     const childrenArr = React.Children.toArray(children)
     let swipeItems: any = []
@@ -60,7 +76,9 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       setSwipeStyle({
         ...swipeStyleRef.current,
         ...{
-          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ? distance : 0}px, ${
+            nodeAttr === 'height' ? distance : 0
+          }px, 0)`,
           transitionDuration: duration + 'ms'
         }
       })
@@ -79,7 +97,9 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       setTimeout(() => {
         setSwipeStyle({
           ...swipeStyle,
-          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ? distance : 0}px, ${
+            nodeAttr === 'height' ? distance : 0
+          }px, 0)`,
           transitionDuration: '0ms'
         })
       }, duration)
@@ -109,38 +129,40 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }
 
     const prev = () => {
-      if(loop || (!loop && activeRef.current !== 0)){
+      if (loop || (!loop && activeRef.current !== 0)) {
         setSwiping(true)
         move(-1)
       }
     }
 
     const next = () => {
-      if(loop || (!loop && activeRef.current !== count - 1)){
+      if (loop || (!loop && activeRef.current !== count - 1)) {
         setSwiping(true)
         move(1)
       }
     }
 
     const onStartTouch = (e: React.TouchEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       const touch = e.targetTouches[0]
-      lastStarX.current = nodeAttr === 'width' ?  touch.pageX : touch.pageY
+      lastStarX.current = nodeAttr === 'width' ? touch.pageX : touch.pageY
       setSwiping(true)
     }
 
     const onMoveTouch = (e: React.TouchEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       if (touchable || swipingRef.current) {
         const touch = e.targetTouches[0]
         const distance =
-          (nodeAttr === 'width' ?  touch.pageX : touch.pageY) -
+          (nodeAttr === 'width' ? touch.pageX : touch.pageY) -
           lastStarX.current -
           (activeRef.current + aditionPage) * swiperAttrStyleRef.current
         setSwipeStyle({
           ...swipeStyleRef.current,
           ...{
-            transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px, 0)`,
+            transform: `translate3d(${nodeAttr === 'width' ? distance : 0}px, ${
+              nodeAttr === 'height' ? distance : 0
+            }px, 0)`,
             transitionDuration: duration + 'ms'
           }
         })
@@ -148,11 +170,17 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }
 
     const onEndTouch = (e: React.TouchEvent) => {
-      e.preventDefault();
+      e.preventDefault()
       const touch = e.changedTouches[0]
-      const distance = (nodeAttr === 'width' ?  touch.pageX : touch.pageY) - lastStarX.current
-      const unLoopEdge = !loop && ((distance > 0 && activeRef.current > 0 ) || (distance < 0 && activeRef.current < count - 1));
-      const shouldSwipe = Math.abs(distance * 3) > swiperAttrStyleRef.current && ( loop || unLoopEdge);
+      const distance =
+        (nodeAttr === 'width' ? touch.pageX : touch.pageY) - lastStarX.current
+      const unLoopEdge =
+        !loop &&
+        ((distance > 0 && activeRef.current > 0) ||
+          (distance < 0 && activeRef.current < count - 1))
+      const shouldSwipe =
+        Math.abs(distance * 3) > swiperAttrStyleRef.current &&
+        (loop || unLoopEdge)
       if (distance < 0 && shouldSwipe) {
         move(1)
       } else if (distance > 0 && shouldSwipe) {
@@ -176,11 +204,11 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
           handleResize.cancle()
         }
       }
-    }, [node,nodeAttr])
+    }, [node, nodeAttr])
     // use setTimeout instead of setInterval
     useTimoutInsteadInterval(
       () => {
-        if(loop || (!loop && activeRef.current !== count - 1)){
+        if (loop || (!loop && activeRef.current !== count - 1)) {
           move(1)
         }
       },
@@ -201,11 +229,13 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }))
 
     useEffect(() => {
-      const distance = -(active + aditionPage) * swiperAttrStyle;
+      const distance = -(active + aditionPage) * swiperAttrStyle
       setSwipeStyle({
         ...swipeStyle,
         ...{
-          transform: `translate3d(${nodeAttr === 'width' ?  distance : 0}px, ${nodeAttr === 'height' ?  distance : 0}px , 0)`,
+          transform: `translate3d(${nodeAttr === 'width' ? distance : 0}px, ${
+            nodeAttr === 'height' ? distance : 0
+          }px , 0)`,
           transitionDuration: duration + 'ms'
         }
       })
@@ -248,7 +278,10 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       }
     }, [])
 
-    const classes = classNames(`${prefix}-swiper ${prefix}-swiper__${direction}`, className)
+    const classes = classNames(
+      `${prefix}-swiper ${prefix}-swiper__${direction}`,
+      className
+    )
     swipeItems = React.Children.map(
       children,
       (item: React.ReactChild, index: number) => (
@@ -288,19 +321,52 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
       return (
         <Fragment>
           <div
-            className={`${prefix}-swiper-indicator ${prefix}-indicator-left ${!loop && active === 0 ? (prefix+'-indicator__disable') : ''}`}
+            className={`${prefix}-swiper-indicator ${prefix}-indicator-left ${
+              !loop && active === 0 ? prefix + '-indicator__disable' : ''
+            }`}
             onClick={prev}
           >
             <i className={`${prefix}-indicator-icon`}>
-              <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1121" width="200" height="200"><path d="M755.499 115.499a42.667 42.667 0 0 0-60.331-60.331L268.501 481.835a42.667 42.667 0 0 0 0 60.33l426.667 426.667a42.667 42.667 0 0 0 60.33-60.33L358.999 512l396.5-396.501z" p-id="1122"></path></svg>
+              <svg
+                className='icon'
+                viewBox='0 0 1024 1024'
+                version='1.1'
+                xmlns='http://www.w3.org/2000/svg'
+                p-id='1121'
+                width='200'
+                height='200'
+              >
+                <path
+                  d='M755.499 115.499a42.667 42.667 0 0 0-60.331-60.331L268.501 481.835a42.667 42.667 0 0 0 0 60.33l426.667 426.667a42.667 42.667 0 0 0 60.33-60.33L358.999 512l396.5-396.501z'
+                  p-id='1122'
+                />
+              </svg>
             </i>
-           </div>
+          </div>
           <div
-            className={`${prefix}-swiper-indicator ${prefix}-indicator-right ${!loop && active === count-1 ? (prefix+'-indicator__disable') : ''}`}
+            className={`${prefix}-swiper-indicator ${prefix}-indicator-right ${
+              !loop && active === count - 1
+                ? prefix + '-indicator__disable'
+                : ''
+            }`}
             onClick={next}
           >
-             <i className={`${prefix}-indicator-icon`}>
-             <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1531" width="200" height="200"><path d="M268.501 908.501a42.667 42.667 0 0 0 60.331 60.331l426.667-426.667a42.667 42.667 0 0 0 0-60.33L328.832 55.168a42.667 42.667 0 0 0-60.33 60.33L665.001 512l-396.5 396.501z" p-id="1532"></path></svg></i>
+            <i className={`${prefix}-indicator-icon`}>
+              <svg
+                className='icon'
+                viewBox='0 0 1024 1024'
+                version='1.1'
+                xmlns='http://www.w3.org/2000/svg'
+                p-id='1531'
+                width='200'
+                height='200'
+              >
+                <path
+                  d='M268.501 908.501a42.667 42.667 0 0 0 60.331 60.331l426.667-426.667a42.667 42.667 0 0 0 0-60.33L328.832 55.168a42.667 42.667 0 0 0-60.33 60.33L665.001 512l-396.5 396.501z'
+                  p-id='1532'
+                />
+              </svg>
+            </i>
           </div>
         </Fragment>
       )

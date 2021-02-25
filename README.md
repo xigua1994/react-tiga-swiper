@@ -5,7 +5,7 @@
 [![NPM](https://img.shields.io/npm/v/react-tiga-swiper.svg)](https://www.npmjs.com/package/react-tiga-swiper) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 <p align="center">
-  🇨🇳 <a href="./README.zh-CN.md">中文版介绍</a>
+  🇨🇳 <a href="https://github.com/xigua1994/react-tiga-swiper/blob/master/README.zh-cn.md">中文版介绍</a>
 </p>
 
 ## Install
@@ -91,7 +91,7 @@ function App() {
 | `duration`  | Animation duration(ms)       | `number`   | `300`      |   |
 | `autoPlay`   | Autoplay interval(ms)       | `number`  | `3000`     |     |
 | `selectedIndex` | index of initial swiper, start from 0 | `number` |  `0` | |
-| `direction`   | scroll direction          | `string`  | `'horizontal' | 'vertical'`     |     |
+| `direction`   | scroll direction          | `string`  | `horizontal | 'vertical`     |     |
 | `loop`   | whether to enable loop       | `bool`           | `true`     |  |
 | `touchable`   | whether to enable touchable       | `bool`           | `true`     |  |
 | `showIndicators`   | whether to enable show indicators  | `bool` | `true` |  |
