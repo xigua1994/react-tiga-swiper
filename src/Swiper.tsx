@@ -151,7 +151,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
 
     const onMoveTouch = (e: React.TouchEvent) => {
       e.preventDefault()
-      if (touchable || swipingRef.current) {
+      if (touchable && swipingRef.current) {
         const touch = e.targetTouches[0]
         const distance =
           (nodeAttr === 'width' ? touch.pageX : touch.pageY) -
