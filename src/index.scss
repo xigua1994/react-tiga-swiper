@@ -7,6 +7,9 @@ $classNamePrefix: 'tiga-swiper';
   transition-timing-function: ease;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.tiga-swiper-wrap{
+  touch-action: none;
+}
 .tiga-swiper-container__vertical{
   flex-direction: column;
 }
