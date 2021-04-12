@@ -236,47 +236,10 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
           transform: `translate3d(${nodeAttr === 'width' ? distance : 0}px, ${
             nodeAttr === 'height' ? distance : 0
           }px , 0)`,
-          transitionDuration: duration + 'ms'
+          transitionDuration: '0ms'
         }
       })
     }, [swiperAttrStyle])
-
-    // listene attch event
-    useEffect((): any => {
-      if (container.current) {
-        container.current.addEventListener(
-          'touchstart',
-          onStartTouch as any,
-          false
-        )
-        container.current.addEventListener(
-          'touchmove',
-          onMoveTouch as any,
-          false
-        )
-        container.current.addEventListener('touchend', onEndTouch as any, false)
-
-        return () => {
-          if (container.current) {
-            container.current.removeEventListener(
-              'touchstart',
-              onStartTouch as any,
-              false
-            )
-            container.current.removeEventListener(
-              'touchmove',
-              onMoveTouch as any,
-              false
-            )
-            container.current.removeEventListener(
-              'touchend',
-              onEndTouch as any,
-              false
-            )
-          }
-        }
-      }
-    }, [])
 
     const classes = classNames(
       `${prefix}-swiper ${prefix}-swiper__${direction}`,
@@ -398,6 +361,9 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
             style={swipeStyle}
             className={`${prefix}-swiper-container ${prefix}-swiper-container__${direction}`}
             ref={container as any}
+            onTouchMove={onMoveTouch}
+            onTouchStart={onStartTouch}
+            onTouchEnd={onEndTouch}
           >
             {swipeItems}
           </div>
