@@ -170,7 +170,7 @@ const Swiper = forwardRef<SwipeRef, SwiperProps>(
     }
 
     const onEndTouch = (e: React.TouchEvent) => {
-      e.preventDefault()
+      // e.preventDefault()
       const touch = e.changedTouches[0]
       const distance =
         (nodeAttr === 'width' ? touch.pageX : touch.pageY) - lastStarX.current
