@@ -57,7 +57,6 @@ function App() {
         showIndicators={true}
         indicator={null}
         dots={null}
-        direction="vertical"
         loop={false}
         ref={swiperRef}
         onChange={onChange}
